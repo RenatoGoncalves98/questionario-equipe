@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Questionário da Equipe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Layout: formulário em coluna única (~720px), um bloco por seção, barra de ações fixa no rodapé */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --fg:#17202b; --muted:#5b6675; --line:#dfe3e9;
+  --accent:#1f4e79; --accent-fg:#ffffff; --accent-soft:#e3ecf5; --ok:#2e6b45; --ok-soft:#e1f0e6; --warn:#a15c00; --warn-soft:#fbefdc; --bad:#a33a2b;
+  --f-display:"Source Serif 4", Georgia, serif; --f-body:"IBM Plex Sans", system-ui, sans-serif; --f-mono:"IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12171d; --surface:#1a2129; --fg:#e6eaef; --muted:#9aa5b3; --line:#2c3540;
+  --accent:#8db8e3; --accent-fg:#0f1a26; --accent-soft:#1f2f40; --ok:#86c79c; --ok-soft:#1d3326; --warn:#e3a95a; --warn-soft:#3a2c17; --bad:#ec8f80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171d; --surface:#1a2129; --fg:#e6eaef; --muted:#9aa5b3; --line:#2c3540;
+  --accent:#8db8e3; --accent-fg:#0f1a26; --accent-soft:#1f2f40; --ok:#86c79c; --ok-soft:#1d3326; --warn:#e3a95a; --warn-soft:#3a2c17; --bad:#ec8f80; color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-body)}
+[hidden]{display:none!important}
+.wa{background:#1f7a4a;border-color:#1f7a4a;color:#fff}
+.wrap{max-width:740px;margin:0 auto;padding-block:36px 120px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--f-display);margin:0;line-height:1.2;text-wrap:balance}
+h1{font-size:2.1rem} h2{font-size:1.25rem}
+p{margin:0}
+.eyebrow{font:500 .72rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{color:var(--muted);max-width:62ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.q{display:flex;flex-direction:column;gap:7px;min-width:0}
+.q > label,.q > .lbl{font-weight:500}
+.q small{color:var(--muted);font-size:.83rem}
+input[type=text],input[type=number],input[type=time],select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px;width:100%;box-sizing:border-box}
+textarea{min-height:76px;resize:vertical}
+input[type=number]{max-width:160px;font-family:var(--f-mono)}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:6px 12px;cursor:pointer;background:var(--bg);font-size:.9rem;user-select:none}
+.chip input{margin:0;accent-color:var(--accent)}
+.chip:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.time-grid{display:grid;grid-template-columns:1fr 110px;gap:8px 12px;align-items:center}
+.time-grid input{max-width:none}
+.time-grid .tot{font:500 .9rem var(--f-mono);text-align:right}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));z-index:5}
+.bar-in{max-width:740px;margin:0 auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.status{flex:1;min-width:160px;font-size:.86rem;color:var(--muted)}
+.status.ok{color:var(--ok)} .status.bad{color:var(--bad)}
+button{font:500 .92rem var(--f-body);border-radius:6px;padding:10px 16px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+button.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.empty{border:1px dashed var(--line);border-radius:10px;padding:28px;text-align:center;color:var(--muted)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 .72rem var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+.pill{display:inline-block;font:500 .72rem/1 var(--f-mono);padding:4px 7px;border-radius:99px}
+.p-ok{background:var(--ok-soft);color:var(--ok)} .p-warn{background:var(--warn-soft);color:var(--warn)}
+.copybox{width:100%;min-height:160px;font:.82rem/1.5 var(--f-mono)}
+.note{background:var(--accent-soft);border-radius:8px;padding:12px 14px;font-size:.88rem}
+</style>
+</head><body>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <span class="eyebrow">Escritório · mapeamento de rotina · leva cerca de 15 minutos</span>
+    <h1>Questionário da Equipe</h1>
+    <p class="lede">Queremos entender como é o seu dia de verdade: o que você faz, quanto tempo leva, onde espera por alguém e o que é repetitivo. Não é avaliação de desempenho. As respostas servem para decidir o que automatizar primeiro e tirar trabalho chato da sua mesa. Responda com números aproximados, sem precisar ser exato.</p>
+    <p class="note">Suas respostas ficam guardadas neste aparelho enquanto você responde. Ao terminar, toque em <b>Enviar pelo WhatsApp</b>: o WhatsApp abre com tudo pronto, é só apertar enviar.</p>
+  </header>
+
+  <section class="card" id="sec-quem">
+    <div class="q">
+      <label for="pessoa">Quem está respondendo?</label>
+      <select id="pessoa"><option value="">Escolha seu nome</option></select>
+      <small>As perguntas mudam conforme a sua função.</small>
+    </div>
+  </section>
+
+  <div id="form" style="display:flex;flex-direction:column;gap:28px"></div>
+
+  <section class="card" id="sec-copia" hidden>
+    <h2>Prévia do que será enviado</h2>
+    <p class="lede">Se o WhatsApp não abrir sozinho, copie o texto abaixo e mande para o Dr. Renato.</p>
+    <textarea id="copytxt" class="copybox" readonly></textarea>
+    <div class="row"><button id="btn-copiar2" type="button">Copiar texto</button></div>
+  </section>
+</div>
+
+<div class="bar"><div class="bar-in">
+  <span class="status" id="status">Escolha seu nome para começar.</span>
+  <button type="button" id="btn-copiar">Copiar respostas</button>
+  <button type="button" class="wa" id="btn-enviar" disabled>Enviar pelo WhatsApp</button>
+</div></div>
+
+<script>
+const PESSOAS = {
+  "Kimberly":"comercial","Stephanie":"comercial","Juliana":"posvenda","Garcia":"producao",
+  "Lenilson":"peticao","Tayane":"peticao","Rafael":"advogado","Alacid":"controller",
+  "Samara":"financeiro","Adlin":"atendimento","Renato":"socio"
+};
+const SISTEMAS = ["ADVBOX","WhatsApp / Masterchat","Meu INSS","PJe / tribunais","Gerador de Petições","Google Drive","ZapSign","Rhilo","Planilhas (Excel/Google)","E-mail","Celular pessoal","Editor de imagem/PDF"];
+const NOMES = Object.keys(PESSOAS);
+
+/* tipos: num, text, area, sel, checks, escala */
+const ROLES = {
+  comercial:{ titulo:"Comercial (novos leads)",
+    atividades:["Conversar com leads no WhatsApp","Assumir leads da IA e fechar contrato","Pedir e conferir documentos","Montar e fechar a pasta","Atualizar ADVBOX/CRM","Reuniões e outras tarefas"],
+    perguntas:[
+      {id:"leads_dia",t:"num",q:"Quantos leads você atende por dia, em média?"},
+      {id:"fech_sem",t:"num",q:"Quantos contratos você fecha por semana?"},
+      {id:"dias_fech",t:"num",q:"Do primeiro contato até a pasta fechada, quantos dias leva em média?"},
+      {id:"ia_falha",t:"area",q:"Em que situações a IA (SDR) passa o lead mal preparado ou erra?"},
+      {id:"confere",t:"checks",q:"O que você confere nos documentos antes de fechar a pasta?",op:["Nome no comprovante de residência","Data do comprovante (até 180 dias)","Se a foto está legível e inteira","Procuração assinada","Declaração de hipossuficiência assinada","Laudo/atestado recente","CNIS/indeferimento do INSS","RG e CPF"]},
+      {id:"doc_terceiro",t:"area",q:"Quando o comprovante está no nome de outra pessoa, o que você faz hoje?"},
+      {id:"pct_volta",t:"sel",q:"De cada 10 pastas que você fecha, quantas voltam por problema de documento?",op:["0","1","2","3","4","5 ou mais","Não sei"]},
+      {id:"min_pasta",t:"num",q:"Quantos minutos você gasta para montar e fechar uma pasta?"},
+      {id:"objecoes",t:"area",q:"Quais são as dúvidas ou objeções mais comuns dos clientes antes de fechar?"}
+    ]},
+  posvenda:{ titulo:"Pós-venda, indicações e contato com cliente",
+    atividades:["Atender e fechar clientes de indicação","Pedir documentos (exigências e emendas)","Avisar perícias e audiências","Organizar laudos (PREVDOC, fisio)","Avisar protocolo/distribuição","Responder dúvidas de clientes","Atualizar ADVBOX"],
+    perguntas:[
+      {id:"ind_mes",t:"num",q:"Quantos clientes de indicação você fecha por mês?"},
+      {id:"msg_dia",t:"num",q:"Quantas mensagens para clientes você envia por dia?"},
+      {id:"pct_modelo",t:"sel",q:"Dessas mensagens, quantas poderiam sair de um modelo pronto?",op:["Quase nenhuma","Até metade","Mais da metade","Quase todas"]},
+      {id:"pedidos_sem",t:"num",q:"Quantos pedidos de documento ao cliente você faz por semana?"},
+      {id:"dias_resp",t:"num",q:"Quantos dias o cliente leva, em média, para mandar o documento pedido?"},
+      {id:"sumidos",t:"sel",q:"De cada 10 clientes a quem você pede documento, quantos somem ou demoram demais?",op:["0","1","2","3","4","5 ou mais"]},
+      {id:"laudos",t:"area",q:"Como funciona hoje a organização dos laudos (PREVDOC, fisioterapeuta)? Onde você controla?"},
+      {id:"pericia_sem",t:"num",q:"Quantos avisos de perícia você faz por semana?"},
+      {id:"senha_inss",t:"area",q:"Com que frequência aparece o problema de senha do INSS ou verificação em 2 etapas? Como você resolve?"}
+    ]},
+  producao:{ titulo:"Produção (documentos e exigências)",
+    atividades:["Cortar, endireitar e editar fotos/PDFs","Renomear e organizar arquivos","Analisar exigências do INSS","Pedir documentos via Juliana e juntar","Documentação para saque de RPV","Encaminhar casos (análise para Lenilson/Tayane)","Atualizar ADVBOX"],
+    perguntas:[
+      {id:"pastas_dia",t:"num",q:"Quantas pastas novas você trata por dia?"},
+      {id:"min_pasta",t:"num",q:"Quantos minutos leva tratar uma pasta completa (do recebimento até mandar para a distribuição)?"},
+      {id:"pct_edicao",t:"sel",q:"De cada 10 documentos que chegam, quantos precisam de corte ou edição?",op:["0 a 2","3 a 5","6 a 8","9 ou 10"]},
+      {id:"ferramentas",t:"area",q:"Que programas ou aplicativos você usa para editar, cortar e juntar os arquivos?"},
+      {id:"padrao_nome",t:"area",q:"Qual é o padrão de nome que você usa nos arquivos? (ex.: 01-RG, 02-CPF...)"},
+      {id:"problemas_doc",t:"checks",q:"Quais problemas mais aparecem nos documentos que chegam do comercial?",op:["Foto torta ou cortada","Ilegível / desfocada","Comprovante em nome de terceiro","Comprovante vencido","Procuração sem assinatura","Faltando documento","Laudo antigo","Arquivo em formato errado"]},
+      {id:"exig_sem",t:"num",q:"Quantas exigências do INSS você analisa por semana?"},
+      {id:"min_exig",t:"num",q:"Quantos minutos leva cada exigência, do recebimento até juntar o documento?"},
+      {id:"rpv_mes",t:"num",q:"Quantas documentações de RPV para saque você prepara por mês?"},
+      {id:"fila",t:"area",q:"O ADVBOX mostra você como responsável por cerca de 565 pastas abertas e 118 tarefas vencidas. Quantas estão realmente em andamento com você? O que está acumulado?"}
+    ]},
+  peticao:{ titulo:"Iniciais, requerimentos e distribuição",
+    atividades:["Analisar o caso","Elaborar requerimento administrativo","Elaborar inicial no Gerador","Pré-distribuição","Registrar distribuição no ADVBOX","Fazer emendas","Petições intermediárias"],
+    perguntas:[
+      {id:"ini_sem",t:"num",q:"Quantas iniciais você faz por semana?"},
+      {id:"min_ini",t:"num",q:"Quantos minutos leva uma inicial usando o Gerador, do início até mandar para assinatura?"},
+      {id:"req_sem",t:"num",q:"Quantos requerimentos administrativos você faz por semana? (deixe 0 se não faz)"},
+      {id:"min_req",t:"num",q:"Quantos minutos leva cada requerimento administrativo?"},
+      {id:"gerador_trava",t:"checks",q:"Em que parte o Gerador de Petições trava ou dá problema?",op:["Leitura dos documentos","Geração da petição","Pré-distribuição no PJe","Anexar e classificar PDFs","Escolha de vara/assunto","Lentidão geral","Não trava"]},
+      {id:"gerador_desc",t:"area",q:"Descreva o problema do Gerador que mais atrapalha (o que acontece, com que frequência)."},
+      {id:"min_alimentar",t:"num",q:"Quantos minutos leva registrar uma distribuição no ADVBOX?"},
+      {id:"emendas_sem",t:"num",q:"Quantas emendas você faz por semana?"},
+      {id:"motivo_emenda",t:"area",q:"Quais motivos de emenda você mais vê? Algum poderia ter sido evitado no fechamento?"}
+    ]},
+  advogado:{ titulo:"Revisão, assinatura e peças",
+    atividades:["Revisar e assinar iniciais","Distribuir no PJe","Impugnação de laudo e quesitos","Recursos e contrarrazões","Petições intermediárias","Análise processual","Diligências no INSS"],
+    perguntas:[
+      {id:"assin_dia",t:"num",q:"Quantas iniciais você revisa e assina por dia?"},
+      {id:"min_revisao",t:"num",q:"Quantos minutos leva revisar cada inicial?"},
+      {id:"devolve",t:"sel",q:"De cada 10 iniciais que chegam, quantas você precisa devolver ou corrigir?",op:["0","1","2","3","4","5 ou mais"]},
+      {id:"corrige",t:"checks",q:"O que você mais corrige nas iniciais?",op:["Valor da causa","Termo de renúncia","Competência / vara","Qualificação das partes","Pedido / benefício errado","Documento faltando","Fundamentação","Formatação"]},
+      {id:"pecas_sem",t:"num",q:"Quantas impugnações, quesitos e recursos você faz por semana, somando tudo?"},
+      {id:"min_peca",t:"num",q:"Quantos minutos leva cada uma dessas peças, em média?"},
+      {id:"skills_uso",t:"area",q:"Você já usa as skills de IA (impugnação, recurso, contrarrazões etc.)? O que funciona e o que não funciona?"},
+      {id:"fila",t:"area",q:"O ADVBOX mostra 77 petições intermediárias e 40 quesitos abertos com você. Isso está atualizado? O que está acumulado?"}
+    ]},
+  controller:{ titulo:"Controle de intimações e RPV",
+    atividades:["Ler intimações e publicações","Triar e criar tarefas para a equipe","Acompanhar perícias e prazos","Acompanhar RPVs e movimentações","Conversar com a equipe sobre casos","Atualizar ADVBOX/planilhas"],
+    perguntas:[
+      {id:"intim_dia",t:"num",q:"Quantas intimações ou publicações você lê por dia?"},
+      {id:"onde_le",t:"checks",q:"Onde você lê as intimações?",op:["ADVBOX","PJe","DJEN / diário","E-mail","Painel de Sentenças","Outro"]},
+      {id:"min_triagem",t:"num",q:"Quantos minutos leva, em média, triar uma intimação e criar as tarefas?"},
+      {id:"tipos",t:"checks",q:"Quais tipos de intimação mais aparecem?",op:["Emenda / juntada de documento","Perícia marcada","Laudo pericial","Sentença","Acórdão","RPV / cálculo","Audiência","Arquivamento"]},
+      {id:"rpv_qtd",t:"num",q:"Quantos processos com RPV você acompanha hoje?"},
+      {id:"rpv_como",t:"area",q:"Como você acompanha as RPVs (planilha, consulta no tribunal, frequência)? O que já passou batido?"},
+      {id:"regras",t:"area",q:"Que regras você usa para decidir para quem vai cada intimação? Escreva as principais (ex.: perícia → Juliana avisa)."}
+    ]},
+  financeiro:{ titulo:"Financeiro e cobrança",
+    atividades:["Cobrar clientes após concessão","Negociar pagamentos após saque de RPV","Emitir boletos e conferir pagamentos","Repasses aos clientes","Lançar no ADVBOX/planilhas","Contas do escritório"],
+    perguntas:[
+      {id:"cobr_sem",t:"num",q:"Quantos clientes você cobra por semana?"},
+      {id:"como_cobra",t:"checks",q:"Como você cobra?",op:["WhatsApp","Ligação","Boleto","Pix","Presencial","Desconto em folha / benefício"]},
+      {id:"min_neg",t:"num",q:"Quantos minutos leva uma negociação, somando todas as conversas?"},
+      {id:"inad",t:"sel",q:"De cada 10 clientes cobrados, quantos atrasam ou não pagam?",op:["0","1","2","3","4","5 ou mais"]},
+      {id:"controle",t:"area",q:"Onde você controla quem pagou, quem deve e as parcelas?"},
+      {id:"repasses_mes",t:"num",q:"Quantos repasses de RPV são feitos por mês?"},
+      {id:"travas",t:"area",q:"Onde a cobrança mais trava? (cliente some, valor errado, falta informação do processo...)"}
+    ]},
+  atendimento:{ titulo:"Atendimento e retorno aos clientes",
+    atividades:["Responder mensagens de clientes","Enviar avisos de andamento (45 dias)","Consultar andamento no ADVBOX/tribunal","Avisar protocolo e perícias","Repassar dúvidas para a equipe"],
+    perguntas:[
+      {id:"msg_dia",t:"num",q:"Quantas mensagens de clientes você responde por dia?"},
+      {id:"avisos_dia",t:"num",q:"Quantos avisos de andamento (45 dias) você envia por dia?"},
+      {id:"min_aviso",t:"num",q:"Quantos minutos leva montar e enviar um aviso de andamento?"},
+      {id:"fonte",t:"checks",q:"De onde você tira a informação do andamento?",op:["ADVBOX","Consulta no tribunal","Meu INSS","Perguntando para a equipe","Planilhas"]},
+      {id:"perguntas",t:"area",q:"Quais são as 5 perguntas que os clientes mais fazem?"},
+      {id:"pct_modelo",t:"sel",q:"Das respostas que você dá, quantas poderiam sair de um modelo pronto?",op:["Quase nenhuma","Até metade","Mais da metade","Quase todas"]},
+      {id:"repassa",t:"area",q:"Que tipo de pergunta você não consegue responder e precisa repassar? Para quem?"}
+    ]},
+  socio:{ titulo:"Sócio",
+    atividades:["Atender indicações","Cumprimento de sentença","Ir ao banco / saques de RPV","Transferências e repasses","Sustentação oral","Revisar peças e assinar","Gestão da equipe","Marketing e captação"],
+    perguntas:[
+      {id:"cumpr_sem",t:"num",q:"Quantos cumprimentos de sentença você faz por semana?"},
+      {id:"min_cumpr",t:"num",q:"Quantos minutos leva cada cumprimento, incluindo planilha e ADVBOX?"},
+      {id:"saques_mes",t:"num",q:"Quantos saques de RPV você faz por mês?"},
+      {id:"h_banco",t:"num",q:"Quantas horas por mês você passa indo ao banco?"},
+      {id:"sust_mes",t:"num",q:"Quantas sustentações orais por mês?"},
+      {id:"so_eu",t:"area",q:"Que decisões ou tarefas hoje só você consegue fazer?"},
+      {id:"delegar",t:"area",q:"O que você gostaria de nunca mais fazer pessoalmente?"}
+    ]}
+};
+const OUTRAS = {id:"outras_funcoes",t:"area",q:"Que outras funções ou tarefas você faz e que não apareceram nas perguntas acima? Descreva cada uma, com quantas vezes faz por semana e quanto tempo leva."};
+const COMUNS = [
+  {id:"horario",t:"text",q:"Qual é o seu horário de trabalho?",ph:"ex.: 8h às 18h"},
+  {id:"sistemas",t:"checks",q:"Quais sistemas e ferramentas você usa no dia a dia?",op:SISTEMAS},
+  {id:"pct_advbox",t:"sel",q:"Quanto do seu trabalho fica registrado no ADVBOX como tarefa?",op:["Quase nada","Cerca de 1/4","Cerca de metade","Cerca de 3/4","Quase tudo"]},
+  {id:"repet1",t:"text",q:"Tarefa repetitiva que mais toma seu tempo (1ª)"},
+  {id:"repet2",t:"text",q:"Tarefa repetitiva que mais toma seu tempo (2ª)"},
+  {id:"repet3",t:"text",q:"Tarefa repetitiva que mais toma seu tempo (3ª)"},
+  {id:"espera_quem",t:"sel",q:"Por quem você mais espera para continuar seu trabalho?",op:["Ninguém em especial","Cliente"].concat(NOMES)},
+  {id:"espera_oque",t:"area",q:"O que você espera dessa pessoa e quanto tempo costuma levar?"},
+  {id:"retrabalho",t:"area",q:"O que mais volta para você refazer? Por quê?"},
+  {id:"ia_primeiro",t:"area",q:"Se você tivesse um assistente de IA amanhã, qual tarefa entregaria para ele primeiro?"},
+  {id:"frustra",t:"sel",q:"Quanto a sua rotina tem de trabalho chato e repetitivo?",op:["1 - quase nada","2","3","4","5 - quase tudo"]},
+  {id:"extra",t:"area",q:"Algo mais que o escritório deveria saber sobre a sua rotina?"}
+];
+
+const $ = s => document.querySelector(s);
+const state = { pessoa:"", r:{} };
+
+
+function el(tag, attrs={}, ...kids){ const e=document.createElement(tag); for(const k in attrs){ if(k==="text") e.textContent=attrs[k]; else e.setAttribute(k,attrs[k]); } kids.forEach(c=>c&&e.appendChild(c)); return e; }
+
+NOMES.forEach(n=>$("#pessoa").appendChild(el("option",{value:n,text:n})));
+
+function campo(p){
+  const box = el("div",{class:"q"}); const fid="f_"+p.id;
+  const v = state.r[p.id];
+  if(p.t==="checks"){
+    box.appendChild(el("span",{class:"lbl",text:p.q}));
+    const ch = el("div",{class:"chips"});
+    p.op.forEach((o,i)=>{ const id=fid+"_"+i; const inp=el("input",{type:"checkbox",id}); inp.checked=Array.isArray(v)&&v.includes(o);
+      inp.addEventListener("change",()=>{ const cur=new Set(state.r[p.id]||[]); inp.checked?cur.add(o):cur.delete(o); state.r[p.id]=[...cur]; mudou(); });
+      const lb=el("label",{class:"chip",for:id}); lb.appendChild(inp); lb.appendChild(document.createTextNode(o)); ch.appendChild(lb); });
+    box.appendChild(ch); return box;
+  }
+  box.appendChild(el("label",{for:fid,text:p.q}));
+  let inp;
+  if(p.t==="area"){ inp=el("textarea",{id:fid}); }
+  else if(p.t==="sel"){ inp=el("select",{id:fid}); inp.appendChild(el("option",{value:"",text:"Escolha"})); p.op.forEach(o=>inp.appendChild(el("option",{value:o,text:o}))); }
+  else if(p.t==="num"){ inp=el("input",{type:"number",id:fid,min:"0",step:"any",inputmode:"decimal"}); }
+  else { inp=el("input",{type:"text",id:fid}); if(p.ph) inp.placeholder=p.ph; }
+  if(v!==undefined) inp.value=v;
+  inp.addEventListener(p.t==="sel"?"change":"input",()=>{ state.r[p.id]=inp.value; mudou(); });
+  box.appendChild(inp); return box;
+}
+
+function tempoBloco(role){
+  const card=el("section",{class:"card"});
+  card.appendChild(el("span",{class:"eyebrow",text:"Parte 2 · seu dia"}));
+  card.appendChild(el("h2",{text:"Quantas horas por dia vão para cada atividade?"}));
+  card.appendChild(el("p",{class:"lede",text:"Pense num dia normal. Use decimais se precisar (0,5 = meia hora). Deixe em branco o que você não faz."}));
+  const g=el("div",{class:"time-grid"}); const tot=el("span",{class:"tot"});
+  const atual=()=>{ const t=(state.r.tempo||{}); const s=Object.values(t).reduce((a,b)=>a+(parseFloat(String(b).replace(",","."))||0),0); tot.textContent="Total: "+s.toLocaleString("pt-BR",{maximumFractionDigits:1})+" h"; };
+  const lista = role.atividades.concat(["Outras atividades"]);
+  lista.forEach((a,i)=>{ const id="t_"+i; const lb=el("label",{for:id,text:a}); const inp=el("input",{type:"number",id,min:"0",max:"14",step:"0.5",inputmode:"decimal"});
+    const v=(state.r.tempo||{})[a]; if(v!==undefined) inp.value=v;
+    inp.addEventListener("input",()=>{ state.r.tempo=Object.assign({},state.r.tempo||{}); if(inp.value==="") delete state.r.tempo[a]; else state.r.tempo[a]=inp.value; atual(); mudou(); });
+    g.appendChild(lb); g.appendChild(inp); });
+  g.appendChild(el("span",{text:""})); g.appendChild(tot); atual();
+  card.appendChild(g);
+  card.appendChild(campo({id:"tempo_outras",t:"text",q:"Se marcou \"Outras atividades\", quais são?"}));
+  return card;
+}
+
+function render(){
+  const f=$("#form"); f.textContent="";
+  $("#sec-copia").hidden = !state.pessoa;
+  if(!state.pessoa){ f.appendChild(el("div",{class:"empty",text:"Escolha seu nome acima para ver as perguntas da sua função."})); atualizarBotoes(); return; }
+  const role=ROLES[PESSOAS[state.pessoa]];
+  const c1=el("section",{class:"card"});
+  c1.appendChild(el("span",{class:"eyebrow",text:"Parte 1 · "+role.titulo}));
+  c1.appendChild(el("h2",{text:"Sobre o seu trabalho"}));
+  role.perguntas.forEach(p=>c1.appendChild(campo(p)));
+  c1.appendChild(campo(OUTRAS));
+  f.appendChild(c1);
+  f.appendChild(tempoBloco(role));
+  const c3=el("section",{class:"card"});
+  c3.appendChild(el("span",{class:"eyebrow",text:"Parte 3 · para todos"}));
+  c3.appendChild(el("h2",{text:"Ferramentas, esperas e ideias"}));
+  COMUNS.forEach(p=>c3.appendChild(campo(p)));
+  f.appendChild(c3);
+  gerarTexto(); atualizarBotoes();
+}
+
+function gerarTexto(){
+  if(!state.pessoa){ $("#copytxt").value=""; return ""; }
+  const role=ROLES[PESSOAS[state.pessoa]];
+  const L=["QUESTIONÁRIO DA EQUIPE — "+state.pessoa+" ("+role.titulo+")",""];
+  const fmt=v=>Array.isArray(v)?v.join(", "):(v??"");
+  role.perguntas.concat([OUTRAS]).forEach(p=>{ const v=fmt(state.r[p.id]); if(v!=="") L.push("• "+p.q+"\n  "+v); });
+  const t=state.r.tempo||{}; if(Object.keys(t).length){ L.push("","HORAS POR DIA:"); Object.entries(t).forEach(([a,h])=>L.push("  "+a+": "+h+" h")); if(state.r.tempo_outras) L.push("  Outras: "+state.r.tempo_outras); }
+  L.push("");
+  COMUNS.forEach(p=>{ const v=fmt(state.r[p.id]); if(v!=="") L.push("• "+p.q+"\n  "+v); });
+  const s=L.join("\n"); $("#copytxt").value=s; return s;
+}
+
+function rascunho(){ try{ localStorage.setItem("qeq_rascunho",JSON.stringify(state)); }catch(e){} }
+function lerRascunho(){ try{ const s=JSON.parse(localStorage.getItem("qeq_rascunho")||"null"); if(s&&s.pessoa&&PESSOAS[s.pessoa]){ state.pessoa=s.pessoa; state.r=s.r||{}; } }catch(e){} }
+
+function setStatus(t,cls){ const s=$("#status"); s.textContent=t; s.className="status"+(cls?" "+cls:""); }
+function atualizarBotoes(){ $("#btn-enviar").disabled=!state.pessoa; }
+
+const WHATS = "5598991176755"; /* número do Dr. Renato, só dígitos com 55 + DDD; vazio = a pessoa escolhe o contato */
+
+function mudou(){ rascunho(); gerarTexto(); setStatus("Rascunho guardado neste aparelho. Toque em Enviar pelo WhatsApp quando terminar."); }
+
+async function copiar(){
+  const t=gerarTexto(); if(!t){ setStatus("Escolha seu nome primeiro.","bad"); return; }
+  try{ await navigator.clipboard.writeText(t); setStatus("Texto copiado. Cole no WhatsApp do Dr. Renato.","ok"); }
+  catch(e){ $("#sec-copia").hidden=false; const ta=$("#copytxt"); ta.focus(); ta.select(); setStatus("Selecionei o texto: use Copiar (ou Ctrl+C).",""); }
+}
+function enviar(){
+  const t=gerarTexto(); if(!t){ setStatus("Escolha seu nome primeiro.","bad"); return; }
+  const url="https://wa.me/"+(WHATS||"")+"?text="+encodeURIComponent(t);
+  setStatus(WHATS?"Abrindo o WhatsApp… confira e aperte enviar. Se não abrir, use Copiar respostas.":"Abrindo o WhatsApp… escolha o contato do Dr. Renato e aperte enviar.","ok");
+  window.location.href=url;
+}
+$("#btn-copiar").addEventListener("click",copiar);
+$("#btn-copiar2").addEventListener("click",copiar);
+$("#btn-enviar").addEventListener("click",enviar);
+$("#pessoa").addEventListener("change",e=>{ state.pessoa=e.target.value; rascunho(); render(); if(state.pessoa) mudou(); });
+
+lerRascunho();
+if(state.pessoa) $("#pessoa").value=state.pessoa;
+render();
+if(state.pessoa) setStatus("Rascunho recuperado deste aparelho.");
+</script>
+</body></html>
